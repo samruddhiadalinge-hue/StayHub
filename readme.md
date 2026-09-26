@@ -1,0 +1,3 @@
+installed npm init -y
+npm i express
+npm i ejs
