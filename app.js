@@ -8,6 +8,8 @@ const ejsMate = require("ejs-mate");
 const wrapAsync= require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const{listingSchema} =  require("./schema.js");
+const Review = require("./models/review.js"); 
+
 
 const MONGO_URL = 'mongodb://127.0.0.1:27017/stayhub';
 main().then(()=>{
@@ -101,6 +103,26 @@ app.delete("/listings/:id", wrapAsync(async(req,res) => {
     console.log(deletedListing);
     res.redirect("/listings");
 }));
+
+//reviews
+//post route
+app.post("/listings/:id/reviews", async (req, res) => {
+    try {
+        let listing = await Listing.findById(req.params.id);
+        if (!listing) {
+            return res.status(404).send("Listing not found");
+        }
+        let newReview = new Review(req.body.review);
+        listing.reviews.push(newReview._id);
+        await newReview.save();
+        await listing.save();
+        
+        res.redirect(`/listings/${listing._id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error saving review");
+    }
+});
 
 app.all("/{*splat}", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));

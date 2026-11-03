@@ -1,10 +1,8 @@
-(() => {
+document.addEventListener('DOMContentLoaded', () => {
   'use strict'
 
-   
   const forms = document.querySelectorAll('.needs-validation')
 
-  
   Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
       if (!form.checkValidity()) {
@@ -15,4 +13,4 @@
       form.classList.add('was-validated')
     }, false)
   })
-})()
+})
